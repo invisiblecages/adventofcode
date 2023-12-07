@@ -7,13 +7,57 @@ internal class Program
   public static void Solve(string file)
   {
     string[] input = File.ReadAllLines(file);
+    List<ulong> seeds = input[0].Split(": ")[1].Split(" ").Select(ulong.Parse).ToList();
+    Dictionary<string, List<List<ulong>>> almanac = [];
+    string source = "";
 
-    foreach (string line in input)
+    foreach (string line in input[2..])
     {
-      Console.WriteLine(line);
+      if (line == "")
+      {
+        continue;
+      }
+
+      if (line.Contains(':'))
+      {
+        source = line.Replace(" map:", "");
+        almanac[source] = [];
+      }
+      else
+      {
+        almanac[source].Add(line.Split(" ").Select(ulong.Parse).ToList());
+      }
     }
 
-    Console.WriteLine($"1: {1}");
+    Dictionary<ulong, List<ulong>> correspondingNumbers = [];
+
+    foreach (ulong seed in seeds)
+    {
+      ulong number = seed;
+      correspondingNumbers[seed] = [];
+
+      foreach (var kvp in almanac)
+      {
+        foreach (List<ulong> numbers in kvp.Value)
+        {
+          ulong destRangeStart = numbers[0];
+          ulong srcRangeStart = numbers[1];
+          ulong rangeLength = numbers[2];
+
+          if (srcRangeStart <= number && number < srcRangeStart + rangeLength)
+          {
+            number = destRangeStart + number - srcRangeStart;
+            break;
+          }
+        }
+
+        correspondingNumbers[seed].Add(number);
+      }
+    }
+
+    // TODO: Part 2
+
+    Console.WriteLine($"1: {correspondingNumbers.Min(kvp => kvp.Value.Last())}");
     Console.WriteLine($"2: {2}");
   }
 
