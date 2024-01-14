@@ -18,37 +18,29 @@ class Universe
 
     for (int i = 0; i < rows; i++)
     {
-      bool hasGalaxy = false;
+      bool emptyRow = true;
+      bool emptyCol = true;
 
       for (int j = 0; j < cols; j++)
       {
         if (input[i][j] == '#')
         {
           Galaxies.Add(new Galaxy(i, j));
-          hasGalaxy = true;
+          emptyRow = false;
+        }
+
+        if (input[j][i] == '#')
+        {
+          emptyCol = false;
         }
       }
 
-      if (!hasGalaxy)
+      if (emptyRow)
       {
         EmptyRows.Add(i);
       }
-    }
 
-    for (int i = 0; i < cols; i++)
-    {
-      bool hasGalaxy = false;
-
-      for (int j = 0; j < rows; j++)
-      {
-        if (input[j][i] != '.')
-        {
-          hasGalaxy = true;
-          break;
-        }
-      }
-
-      if (!hasGalaxy)
+      if (emptyCol)
       {
         EmptyCols.Add(i);
       }
